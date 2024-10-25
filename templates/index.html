@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+  <head>
+    <title>File Upload</title>
+  </head>
+  <body>
+    <h1>File Upload</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+      <p><input type="file" name="file" id="fileInput"></p>
+      <p><input type="button" id="uploadButton" value="Upload"></p>
+    </form>
+    <div id="responseMessage"></div>
+
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        $('#uploadButton').on('click', function(e) {
+          e.preventDefault();
+          let formData = new FormData();
+          let file = $('#fileInput')[0].files[0];
+          
+          if (!file) {
+            $('#responseMessage').text("Please select a file first.");
+            return;
+          }
+          
+          formData.append('file', file);
+          
+          $.ajax({
+            url: '/upload',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+              $('#responseMessage').text("File uploaded successfully!");
+            },
+            error: function(xhr, status, error) {
+              $('#responseMessage').text("Error uploading file: " + error);
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
