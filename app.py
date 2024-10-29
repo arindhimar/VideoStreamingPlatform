@@ -1,75 +1,84 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS
 import os
+import uuid
 import subprocess
 
 app = Flask(__name__)
-# CORS(app)  # Enable CORS for all routes
+CORS(app)
 
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['SPLIT_FOLDER'] = 'splits'
+app.config['UPLOAD_FOLDER'] = 'uploads/'
 
 # Ensure folders exist
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-os.makedirs(app.config['SPLIT_FOLDER'], exist_ok=True)
 
 def is_video_file(filename):
     video_extensions = ('.mp4', '.avi', '.mov', '.mkv')
     return filename.lower().endswith(video_extensions)
 
-def split_video(input_path, output_dir, segment_duration=10):
-    output_pattern = os.path.join(output_dir, "part_%03d.mp4")
-    ffmpeg_path = "C:\ffmpeg\ffmpeg-master-latest-win64-gpl\bin"  # Ensure 'ffmpeg' is in PATH; or provide the full path here
-    
-    try:
-        subprocess.run(
-            [
-                ffmpeg_path,
-                "-i", input_path,
-                "-f", "segment",
-                "-segment_time", str(segment_duration),
-                "-reset_timestamps", "1",
-                output_pattern
-            ],
-            check=True,
-            capture_output=True,
-            text=True
-        )
-    except subprocess.CalledProcessError as e:
-        print("FFmpeg error:", e.stderr)  # Logs FFmpeg error output
-        raise  # Reraise the exception to be handled by the calling function
 
-@app.route("/")
-def index():
-    return render_template("index.html")
 
+#need to implement queue system in this (file must be uploaded first and then added to queue ,  admin can tract thrugh panel regarding file processing)
 @app.route("/upload", methods=["POST"])
 def upload_file():
     if 'file' not in request.files:
         return jsonify({"error": "No file part in the request"}), 400
-    
+
     file = request.files['file']
     if file.filename == '' or not is_video_file(file.filename):
         return jsonify({"error": "No selected video file or incorrect file type"}), 400
-    
-    # Save the uploaded file
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    file.save(file_path)
-    
-    # Define output folder for splits
-    split_output_dir = os.path.join(app.config['SPLIT_FOLDER'], file.filename.split('.')[0])
-    os.makedirs(split_output_dir, exist_ok=True)
-    
-    # Split the video with error handling
-    try:
-        split_video(file_path, split_output_dir)
-    except Exception as e:
-        print("Error in split_video function:", str(e))  # Logs error to the server console
-        return jsonify({"error": f"Error splitting video: {str(e)}"}), 500
 
-    # List of split video file paths
-    split_files = [os.path.join(split_output_dir, f) for f in os.listdir(split_output_dir)]
-    return jsonify({"success": True, "split_files": split_files})
+    # Generate a unique lesson ID
+    lesson_id = str(uuid.uuid4())
+    filename_extension = file.filename.rsplit('.', 1)[1]  # Get file extension
+    video_path = os.path.join(app.config['UPLOAD_FOLDER'], lesson_id, f"main_{lesson_id}.{filename_extension}")
+
+    # Create a unique folder for each upload based on UUID
+    output_path = os.path.join(app.config['UPLOAD_FOLDER'], lesson_id)
+    hls_path = os.path.join(output_path, "index.m3u8")
+    os.makedirs(output_path, exist_ok=True)
+
+    # Save the uploaded video with the new filename
+    file.save(video_path)
+
+    # FFmpeg command to convert the video to HLS format
+    ffmpeg_command = [
+        "ffmpeg",
+        "-i", video_path,
+        "-codec:v", "libx264",
+        "-codec:a", "aac",
+        "-hls_time", "10",
+        "-hls_playlist_type", "vod",
+        "-hls_segment_filename", os.path.join(output_path, "segment%03d.ts"),
+        "-start_number", "0",
+        hls_path
+    ]
+
+    try:
+        # Execute the FFmpeg command
+        subprocess.run(ffmpeg_command, check=True, capture_output=True, text=True)
+    except subprocess.CalledProcessError as e:
+        print(f"FFmpeg error: {e.stderr}")  # Log error output
+        return jsonify({"error": "Error converting video to HLS format"}), 500
+
+    # URL for accessing the video playlist
+    video_url = f"/stream/{lesson_id}/index.m3u8"
+
+    return jsonify({
+        "message": "Video converted to HLS format",
+        "videoUrl": video_url,
+        "lessonId": lesson_id
+    })
+
+@app.route('/stream/<lesson_id>/<path:filename>')
+def stream(lesson_id, filename):
+    # Serve the .m3u8 and .ts files from the generated lesson folder
+    directory = os.path.join(app.config['UPLOAD_FOLDER'], lesson_id)
+    return send_from_directory(directory, filename)
+
+@app.route("/")
+def index():
+    return render_template("index.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
