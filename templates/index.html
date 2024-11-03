@@ -4,122 +4,19 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="../static/images/Logo-NoBackgroud.png" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <title>Admin Panel</title>
+    <title>ANIMEX - ADMIN PANEL</title>
 
-    <style>
-        /* Background and Font Styles */
-        body {
-            background-color: #0a1a2f;
-            color: #f8f9fa;
-            font-family: Arial, sans-serif;
-        }
-
-        /* Navbar Styles */
-        .navbar {
-            background-color: #112b44;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-        }
-
-        .navbar-brand,
-        .nav-link {
-            color: #d1e6f7 !important;
-        }
-
-        .nav-link:hover {
-            color: #a3c4e2 !important;
-            text-decoration: underline;
-        }
-
-        .section {
-            display: none;
-            /* Hide all sections initially */
-        }
-
-        /* Table Styles */
-        .table-dark {
-            background-color: #2a5da0 !important;
-            /* Dark blue background for the table */
-            color: #f8f9fa;
-            /* White text color */
-        }
-
-        .table-dark thead th {
-            background-color: #2a5da0 !important;
-            /* Darker blue for the header */
-            color: #f7f7f7;
-            /* Light blue text for the header */
-        }
-
-        .table-dark td {
-            background-color: #375986 !important;
-            /* Darker blue for the header */
-            color: #d1e6f7;
-            /* Light blue text for the header */
-        }
-
-        .table-dark tbody tr:hover {
-            background-color: rgba(219, 229, 234, 0.1) !important;
-            /* Slightly lighter background on hover */
-        }
-
-        .edit-input {
-            width: 100%;
-            /* Make input take full width */
-        }
-
-        /* Animation Styles */
-        .fade-in {
-            animation: fadeIn 0.5s;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        /* Modal Styles */
-        .modal-content {
-            background-color: #1a2a3a;
-            /* Darker background for the modal */
-            color: #f8f9fa;
-            /* Light text color */
-            border: none;
-            /* Remove border */
-        }
-
-        .modal-header {
-            border-bottom: 1px solid #1a2a3a;
-            /* Lighter border for header */
-        }
-
-        .modal-title {
-            color: #d1e6f7;
-            /* Light title color */
-        }
-
-        .modal-body {
-            background-color: #2a5da0;
-            /* Background color for modal body */
-        }
-
-        .modal-footer {
-            border-top: 1px solid #375986;
-            /* Lighter border for footer */
-        }
-    </style>
+    <link rel="stylesheet" href="../static/css/index.css">
 </head>
 
 <body>
+
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">AnimeX Admin</a>
+            <a class="navbar-brand" href="#"><img src="../static/images/temp.png" alt="404"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
                 aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -150,8 +47,10 @@
     <div class="container mt-5" id="content">
         <div id="home" class="section" style="display: block;">
             <h1>Welcome to the AnimeX Admin Panel</h1>
-            <p>Manage your anime database, genres, and more from this admin dashboard.</p>
+            <div id="newsContainer" class="row"></div>
+            
         </div>
+        
         <div id="genres" class="section">
             <h2>Genres Management</h2>
             <div class="d-flex mb-3">
@@ -164,6 +63,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Genre Name</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="genreTableBody">
@@ -171,6 +71,64 @@
                 </tbody>
             </table>
         </div>
+
+
+        <!-- Add Genre Modal -->
+        <div class="modal fade" id="addGenreModal" tabindex="-1" aria-labelledby="addGenreModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addGenreModalLabel">Add New Genre</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addGenreForm">
+                            <div class="mb-3">
+                                <label for="genreName" class="form-label">Genre Name</label>
+                                <input type="text" class="form-control" id="genreName" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="submitGenreButton">Add Genre</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Genre Modal -->
+        <div class="modal fade" id="editGenreModal" tabindex="-1" aria-labelledby="editGenreModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editGenreModalLabel">Edit Genre</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editGenreForm">
+
+
+                            <div class="mb-3">
+                                <label for="editgenreName" class="form-label">Genre Name</label>
+                                <input type="text" class="form-control" id="editgenreName" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="editGenreButton">Edit Genre</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
         <div id="anime" class="section">
             <h2>Anime Management</h2>
             <div class="d-flex mb-3">
@@ -185,6 +143,8 @@
                         <th>Title</th>
                         <th>Status</th>
                         <th>Release Date</th>
+                        <th>Thumbnail</th>
+                        <th>Banner</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -193,6 +153,105 @@
                 </tbody>
             </table>
         </div>
+
+        <div id="episodes" class="section">
+            <h2>Episodes Management</h2>
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Release Date</th>
+                        <th>Thumbnail</th>
+                        <th>Banner</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="episodeTableBody">
+                    <!-- Anime data rows will go here -->
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- Modal for Viewing Episodes and its progress -->
+        <div class="modal fade" id="viewEpisodeModal" tabindex="-1" role="dialog"
+            aria-labelledby="viewEpisodeModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="viewEpisodeModalLabel">View Episodes</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h2>Uploaded Episodes</h2>
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Episode Number</th>
+                                    <th>Status</th>
+                                    <th>Watch Link</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="viewEpisodeTable">
+                                <!-- Episode data rows will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <!-- Uncomment if needed in future for actions like saving -->
+                        <!-- <button type="button" class="btn btn-primary" id="saveEpisodeButton">Save Episode</button> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Modal for Adding/Editing Episodes -->
+        <div class="modal fade" id="editEpisodeModal" tabindex="-1" role="dialog"
+            aria-labelledby="editEpisodeModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editEpisodeModalLabel">Add/Edit Episode</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editEpisodeForm">
+                            <input type="hidden" id="editEpisodeId">
+                            <div class="form-group">
+                                <label for="editEpisodeTitle">Title</label>
+                                <input type="text" class="form-control" id="editEpisodeTitle" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editEpisodeNumber">Episode Number</label>
+                                <input type="number" class="form-control" id="editEpisodeNumber" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editVideoUrl">Video URL</label>
+                                <input type="file" class="form-control" id="editVideoUrl" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveEpisodeButton">Save Episode</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 
         <!-- Add/Edit Anime Modal -->
         <div class="modal fade" id="addAnimeModal" tabindex="-1" aria-labelledby="addAnimeModalLabel"
@@ -225,6 +284,14 @@
                                     <option value="completed">Completed</option>
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label for="animeThumbnail">Thumbnail</label>
+                                <input type="file" class="form-control" id="animeThumbnail">
+                            </div>
+                            <div class="form-group">
+                                <label for="animeBanner">Banner</label>
+                                <input type="file" class="form-control" id="animeBanner">
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -235,52 +302,62 @@
             </div>
 
         </div>
-        <div class="modal fade" id="editAnimeModal" tabindex="-1" role="dialog" aria-labelledby="editAnimeModalLabel" aria-hidden="true">
+        <div class="modal fade" id="editAnimeModal" tabindex="-1" role="dialog" aria-labelledby="editAnimeModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editAnimeModalLabel">Edit Anime</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <!-- Hidden input for anime ID -->
                         <input type="hidden" id="editAnimeId">
-                        
+
                         <div class="form-group">
                             <label for="editAnimeTitle">Title</label>
                             <input type="text" class="form-control" id="editAnimeTitle" required>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="editAnimeSynopsis">Synopsis</label>
                             <textarea class="form-control" id="editAnimeSynopsis" rows="3"></textarea>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="editAnimeReleaseDate">Release Date</label>
                             <input type="date" class="form-control" id="editAnimeReleaseDate">
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="editAnimeStatus">Status</label>
-                            <input type="text" class="form-control" id="editAnimeStatus">
+                            <select class="form-select" id="editAnimeStatus">
+                                <option value="ongoing">Ongoing</option>
+                                <option value="completed">Completed</option>
+                            </select>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="editThumbnail">Thumbnail</label>
+                            <input type="file" class="form-control" id="editThumbnail">
+                        </div>
+                        <div class="form-group">
+                            <label for="editBanner">Banner</label>
+                            <input type="file" class="form-control" id="editBanner">
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="button" id="saveEditAnimeButton" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>
         </div>
-        
 
-        <div id="episodes" class="section">
-            <h2>Episodes Management</h2>
-            <p>This section allows you to manage episodes.</p>
-        </div>
+
+
         <div id="users" class="section">
             <h2>Users Management</h2>
             <p>This section allows you to manage users.</p>
@@ -291,255 +368,110 @@
         </div>
     </div>
 
-    <!-- Add Genre Modal -->
-    <div class="modal fade" id="addGenreModal" tabindex="-1" aria-labelledby="addGenreModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addGenreModalLabel">Add New Genre</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="addGenreForm">
-                        <div class="mb-3">
-                            <label for="genreName" class="form-label">Genre Name</label>
-                            <input type="text" class="form-control" id="genreName" required>
+
+
+
+
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="footer-cta pt-3 pb-3">
+                <div class="row">
+                    <div class="d-flex align-items-center justify-content-center vh-10">
+                        <div class="single-cta text-center">
+                            <i class="fas fa-quote-left"></i> 
+                            <div class="cta-text">
+                                <span id="animeQuoteHere">Quote</span>
+                                <br>
+                                <span id="animeAuthorHere">Author/Anime</span>
+                            </div>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="submitGenreButton">Add Genre</button>
+                    </div>
+
+                    <!-- <div class="col-xl-4 col-md-4 mb-30">
+                        <div class="single-cta">
+                            <i class="fas fa-phone"></i>
+                            <div class="cta-text">
+                                <h4>Call us</h4>
+                                <span>9876543210 0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-4 mb-30">
+                        <div class="single-cta">
+                            <i class="far fa-envelope-open"></i>
+                            <div class="cta-text">
+                                <h4>Mail us</h4>
+                                <span>mail@info.com</span>
+                            </div>
+                        </div>
+                    </div> -->
                 </div>
             </div>
+            <div class="footer-content pt-5 pb-5">
+                <div class="container text-center">
+                    <div class="row justify-content-center">
+                        <!-- Logo Section -->
+                        <div class="col-xl-4 col-lg-4 mt-3 mb-3">
+                            <div class="footer-widget">
+                                <div class="footer-logo">
+                                    <a href="index.html">
+                                        <img src="../static/images/Logo-NoBackgroud.png" class="img-fluid" alt="logo">
+                                    </a>
+                                </div>
+              
+                            </div>
+                        </div>
+                        <!-- Useful Links Section -->
+                        <div class="col-xl-4 col-lg-4 col-md-6 mb-3">
+                            <div class="footer-widget">
+                                <div class="footer-widget-heading">
+                                    <h3>Useful Links</h3>
+                                </div>
+                                <ul class="list-unstyled">
+                                    <li><a href="#">Home</a></li>
+                                    <li><a href="#">About</a></li>
+                                    <li><a href="#">Services</a></li>
+                                    <li><a href="https://arindhimar.github.io/portfolio/">Portfolio</a></li>
+                                    <li><a href="mailto:arindhimar111@gmail.com">Contact</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Copyright Section -->
+                    <div class="row justify-content-center mt-4">
+                        <div class="col-12">
+                            <div class="copyright-text">
+                                <p>Copyright &copy; 2024, All Rights Reserved <a href="https://github.com/arindhimar/VideoStreamingPlatform/tree/ANIMEX">ANIMEX</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Social Media Icons -->
+                    <div class="row justify-content-center mt-3">
+                        <div class="col-12">
+                            <div class="footer-social-icons">
+                                <a href="https://www.instagram.com/arin_dhimar_/" target="_blank" class="m-3"><i class="fab fa-instagram"></i></a>
+                                <a href="https://github.com/arindhimar" target="_blank" class="m-3"><i class="fab fa-github"></i></a>
+                                <a href="https://www.linkedin.com/in/arin-dhimar/" target="_blank" class="m-3"><i class="fab fa-linkedin"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
         </div>
-    </div>
+
+    </footer>
 
     <script src="../static/js/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
-
-    <script>
-        $(document).ready(function () {
-
-            // Slide sections on nav link click
-            $('.nav-link').on('click', function (e) {
-                e.preventDefault();
-                const section = $(this).data('section'); // Get the section data attribute
-
-                // Slide up the currently visible section
-                $('.section:visible').slideUp(300, function () {
-                    $('#' + section).slideDown(300, function () {
-                        if (section === 'anime') fetchAnime();
-                        if (section === 'genres') fetchGenres();
-                    });
-                });
-            });
-
-            // Fetch and populate anime list
-            function fetchAnime() {
-                $.ajax({
-                    type: "GET",
-                    url: "/anime", // Adjust URL to your endpoint
-                    success: function (response) {
-                        $('#animeTableBody').empty();
-                        response.forEach(function (anime) {
-                            const newRow = `
-                                    <tr>
-                                        <td>${anime.anime_id}</td>
-                                        <td>${anime.title}</td>
-                                        <td>${anime.status}</td>
-                                        <td>${anime.release_date}</td>
-                                        <td>
-                                            <button class="btn btn-warning btn-sm edit-anime" data-id="${anime.anime_id}">Edit</button>
-                                            <button class="btn btn-danger btn-sm delete-anime" data-id="${anime.anime_id}">Delete</button>
-                                        </td>
-                                    </tr>`;
-                            $('#animeTableBody').append(newRow);
-                        });
-                    },
-                    error: function (error) {
-                        console.error('Error fetching anime:', error);
-                        alert('Failed to fetch anime list.');
-                    }
-                });
-            }
-            // Handle click events for Edit button
-            $(document).on('click', '.edit-anime', function () {
-                const animeId = $(this).data('id');
-
-                // Fetch anime details and open edit modal
-                $.ajax({
-                    type: "GET",
-                    url: `/anime/${animeId}`, // Adjust URL to your endpoint for fetching anime details
-                    success: function (anime) {
-                        // Populate the edit modal with the fetched anime details
-                        $('#editAnimeId').val(anime.anime_id); // Hidden input for anime ID
-                        $('#editAnimeTitle').val(anime.title);
-                        $('#editAnimeSynopsis').val(anime.synopsis);
-                        $('#editAnimeReleaseDate').val(anime.release_date);
-                        $('#editAnimeStatus').val(anime.status);
-
-                        // Show the edit modal
-                        $('#editAnimeModal').modal('show');
-                    },
-                    error: function (error) {
-                        console.error('Error fetching anime details:', error);
-                        alert('Failed to fetch anime details.');
-                    }
-                });
-            });
-
-            // Handle saving changes in the edit modal
-            $('#saveEditAnimeButton').on('click', function () {
-                const animeId = $('#editAnimeId').val(); // Get anime ID from hidden input
-                const updatedAnimeData = {
-                    title: $('#editAnimeTitle').val(),
-                    synopsis: $('#editAnimeSynopsis').val(),
-                    release_date: $('#editAnimeReleaseDate').val(),
-                    status: $('#editAnimeStatus').val()
-                };
-
-                // Send updated data to the server
-                $.ajax({
-                    type: "PUT",
-                    url: `/anime/${animeId}`, // Adjust URL to your endpoint for updating anime
-                    contentType: "application/json",
-                    data: JSON.stringify(updatedAnimeData),
-                    success: function () {
-                        $('#editAnimeModal').modal('hide'); // Close the modal
-                        fetchAnime(); // Refresh the anime list
-                        alert('Anime updated successfully!');
-                    },
-                    error: function (error) {
-                        console.error('Error updating anime:', error);
-                        alert('Failed to update anime.');
-                    }
-                });
-            });
+    <script src="https://kit.fontawesome.com/df60ac4e21.js" crossorigin="anonymous"></script>
 
 
-            $(document).on('click', '.delete-anime', function () {
-                const animeId = $(this).data('id');
-                if (confirm(`Are you sure you want to delete anime with ID: ${animeId}?`)) {
-                    $.ajax({
-                        type: "DELETE",
-                        url: `/anime/${animeId}`,
-                        success: function () {
-                            alert(`Anime with ID: ${animeId} has been deleted.`);
-                            fetchAnime(); // Refresh the anime list
-                        },
-                        error: function (error) {
-                            console.error('Error deleting anime:', error);
-                            alert('Failed to delete anime.');
-                        }
-                    });
-                }
-            });
-
-            // Add new anime
-            $('#submitAnimeButton').on('click', function () {
-                const animeData = {
-                    title: $('#animeTitle').val(),
-                    synopsis: $('#animeSynopsis').val(),
-                    release_date: $('#animeReleaseDate').val(),
-                    status: $('#animeStatus').val(),
-                };
-                $.ajax({
-                    type: "POST",
-                    url: "/anime",
-                    contentType: "application/json",
-                    data: JSON.stringify(animeData),
-                    success: function () {
-                        $('#addAnimeModal').modal('hide');
-                        fetchAnime();
-                    },
-                    error: function (error) {
-                        console.error('Error adding anime:', error);
-                    }
-                });
-            });
-
-            // Fetch genres
-            function fetchGenres() {
-                $.ajax({
-                    type: "GET",
-                    url: "/genres",
-                    success: function (response) {
-                        $('#genreTableBody').empty();
-                        response.forEach(function (genre) {
-                            const newRow = `
-                                    <tr>
-                                        <td>${genre.genre_id}</td>
-                                        <td class="editable">${genre.name}</td>
-                                    </tr>`;
-                            $('#genreTableBody').append(newRow);
-                        });
-                        makeGenresEditable(); // Make genre names editable
-                    },
-                    error: function (error) {
-                        console.error('Error fetching genres:', error);
-                        alert('Failed to fetch genres.');
-                    }
-                });
-            }
-
-            // Make genre names editable
-            function makeGenresEditable() {
-                $('.editable').on('click', function () {
-                    const originalText = $(this).text();
-                    $(this).html(`<input type="text" class="edit-input" value="${originalText}">`);
-                    $(this).find('input').focus();
-
-                    $(this).find('input').on('keypress', function (e) {
-                        if (e.which === 13) { // Enter key
-                            const newValue = $(this).val();
-                            $(this).parent().text(newValue); // Update with new value
-                            // Send updated genre to server here if needed
-                        }
-                    });
-
-                    $(this).find('input').on('blur', function () {
-                        $(this).parent().text(originalText); // Reset to original text if no change
-                    });
-                });
-            }
-
-            // Search genres
-            $('#searchGenre').on('input', function () {
-                const searchTerm = $(this).val().toLowerCase();
-                $('#genreTableBody tr').filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(searchTerm) > -1);
-                });
-            });
-
-            // Add new genre
-            $('#submitGenreButton').on('click', function () {
-                const genreName = $('#genreName').val();
-                if (genreName) {
-                    $.ajax({
-                        type: "POST",
-                        url: "/genres",
-                        contentType: "application/json",
-                        data: JSON.stringify({ name: genreName }),
-                        success: function () {
-                            $('#addGenreModal').modal('hide');
-                            $('#genreName').val('');
-                            fetchGenres();
-                        },
-                        error: function (error) {
-                            console.error('Error adding genre:', error);
-                            alert('Failed to add genre.');
-                        }
-                    });
-                } else {
-                    alert('Please enter a genre name.');
-                }
-            });
-        });
-    </script>
+    <script src="../static/js/index.js"></script>
 
 
 

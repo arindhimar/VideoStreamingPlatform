@@ -47,3 +47,29 @@ class GenreModel:
         genre = cur.fetchone()
         cur.close()
         return genre
+
+    def update_genre(self, genre_id, name=None):
+        if name is None:
+            return  # No updates made if name is not provided
+
+        cur = self.conn.cursor()
+        update_query = "UPDATE genres SET name = %s WHERE genre_id = %s"
+
+        try:
+            cur.execute(update_query, (name, genre_id))
+            self.conn.commit()
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            self.conn.rollback()  # Rollback if there's an error
+        finally:
+            cur.close()  # Ensure the cursor is closed
+
+    
+    def delete_genre(self, genre_id):
+        cur = self.conn.cursor()
+        cur.execute("DELETE FROM genres WHERE genre_id = %s", (genre_id,))
+        self.conn.commit()
+        cur.close()
+
+    def close_connection(self):
+        self.conn.close()
