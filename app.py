@@ -3,7 +3,8 @@ import requests
 from controllers.user_controller import user_blueprint
 from controllers.genre_controller import genre_blueprint
 from controllers.anime_controller import anime_blueprint
-from controllers.episode_controller import episode_blueprint  
+from controllers.episode_controller import episode_blueprint 
+from controllers.slideshowimage_controller import slideshow_blueprint 
 from controllers.env_controller import env_bp  
 from dotenv import load_dotenv
 import os
@@ -16,6 +17,7 @@ app.register_blueprint(anime_blueprint, url_prefix='/anime')
 app.register_blueprint(user_blueprint, url_prefix='/users')
 app.register_blueprint(genre_blueprint, url_prefix='/genres')
 app.register_blueprint(episode_blueprint, url_prefix='/episodes')
+app.register_blueprint(slideshow_blueprint, url_prefix='/slideshow')
 app.register_blueprint(env_bp, url_prefix='/env') 
 
 @app.route('/')

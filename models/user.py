@@ -47,5 +47,13 @@ class UserModel:
         cur.close()
         return user
 
+    def login_user(self,username,password):
+        cur = self.conn.cursor(dictionary=True)
+        cur.execute("SELECT * FROM users where username='"+username+"' and password='"+password+"'")
+        users = cur.fetchall()
+        cur.close()
+        return users
+    
+
     def close_connection(self):
         self.conn.close()

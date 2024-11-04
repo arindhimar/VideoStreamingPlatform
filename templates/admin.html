@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="../static/images/Logo-NoBackgroud.png" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>ANIMEX - ADMIN PANEL</title>
+
+    <link rel="stylesheet" href="../static/css/admin.css">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><img src="../static/images/temp.png" alt="404"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#" data-section="home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="genres">Genres</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="anime">Anime</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="episodes">Episodes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="settings">Settings</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="container mt-5" id="content">
+        <div id="home" class="section" style="display: block;">
+            <h1>Welcome to the AnimeX Admin Panel</h1>
+            <div id="newsContainer" class="row"></div>
+
+        </div>
+
+        <div id="genres" class="section">
+            <h2>Genres Management</h2>
+            <div class="d-flex mb-3">
+                <button class="btn btn-primary me-2" id="addGenreButton" data-bs-toggle="modal"
+                    data-bs-target="#addGenreModal">Add New Genre</button>
+                <input type="text" id="searchGenre" class="form-control" placeholder="Search genres">
+            </div>
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Genre Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="genreTableBody">
+                    <!-- Example Genre Data -->
+                </tbody>
+            </table>
+        </div>
+
+
+        <!-- Add Genre Modal -->
+        <div class="modal fade" id="addGenreModal" tabindex="-1" aria-labelledby="addGenreModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addGenreModalLabel">Add New Genre</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addGenreForm">
+                            <div class="mb-3">
+                                <label for="genreName" class="form-label">Genre Name</label>
+                                <input type="text" class="form-control" id="genreName" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="submitGenreButton">Add Genre</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Genre Modal -->
+        <div class="modal fade" id="editGenreModal" tabindex="-1" aria-labelledby="editGenreModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editGenreModalLabel">Edit Genre</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editGenreForm">
+
+
+                            <div class="mb-3">
+                                <label for="editgenreName" class="form-label">Genre Name</label>
+                                <input type="text" class="form-control" id="editgenreName" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="editGenreButton">Edit Genre</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div id="anime" class="section">
+            <h2>Anime Management</h2>
+            <div class="d-flex mb-3">
+                <button class="btn btn-primary me-2" id="addAnimeButton" data-bs-toggle="modal"
+                    data-bs-target="#addAnimeModal">Add New Anime</button>
+                <input type="text" id="searchAnime" class="form-control" placeholder="Search anime">
+            </div>
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Release Date</th>
+                        <th>Thumbnail</th>
+                        <th>Banner</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="animeTableBody">
+                    <!-- Anime data rows will go here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="episodes" class="section">
+            <h2>Episodes Management</h2>
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Release Date</th>
+                        <th>Thumbnail</th>
+                        <th>Banner</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="episodeTableBody">
+                    <!-- Anime data rows will go here -->
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- Modal for Viewing Episodes and its progress -->
+        <div class="modal fade" id="viewEpisodeModal" tabindex="-1" role="dialog"
+            aria-labelledby="viewEpisodeModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="viewEpisodeModalLabel">View Episodes</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h2>Uploaded Episodes</h2>
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Episode Number</th>
+                                    <th>Status</th>
+                                    <th>Watch Link</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="viewEpisodeTable">
+                                <!-- Episode data rows will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <!-- Uncomment if needed in future for actions like saving -->
+                        <!-- <button type="button" class="btn btn-primary" id="saveEpisodeButton">Save Episode</button> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Modal for Adding/Editing Episodes -->
+        <div class="modal fade" id="editEpisodeModal" tabindex="-1" role="dialog"
+            aria-labelledby="editEpisodeModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editEpisodeModalLabel">Add/Edit Episode</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editEpisodeForm">
+                            <input type="hidden" id="editEpisodeId">
+                            <div class="form-group">
+                                <label for="editEpisodeTitle">Title</label>
+                                <input type="text" class="form-control" id="editEpisodeTitle" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editEpisodeNumber">Episode Number</label>
+                                <input type="number" class="form-control" id="editEpisodeNumber" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editVideoUrl">Video URL</label>
+                                <input type="file" class="form-control" id="editVideoUrl" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveEpisodeButton">Save Episode</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Add/Edit Anime Modal -->
+        <div class="modal fade" id="addAnimeModal" tabindex="-1" aria-labelledby="addAnimeModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addAnimeModalLabel">Add New Anime</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addAnimeForm">
+                            <div class="mb-3">
+                                <label for="animeTitle" class="form-label">Title</label>
+                                <input type="text" class="form-control" id="animeTitle" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="animeSynopsis" class="form-label">Synopsis</label>
+                                <textarea class="form-control" id="animeSynopsis" rows="3" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="animeReleaseDate" class="form-label">Release Date</label>
+                                <input type="date" class="form-control" id="animeReleaseDate" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="animeStatus" class="form-label">Status</label>
+                                <select class="form-select" id="animeStatus">
+                                    <option value="ongoing" selected>Ongoing</option>
+                                    <option value="completed">Completed</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="animeThumbnail">Thumbnail</label>
+                                <input type="file" class="form-control" id="animeThumbnail">
+                            </div>
+                            <div class="form-group">
+                                <label for="animeBanner">Banner</label>
+                                <input type="file" class="form-control" id="animeBanner">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="submitAnimeButton">Add Anime</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal fade" id="editAnimeModal" tabindex="-1" role="dialog" aria-labelledby="editAnimeModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editAnimeModalLabel">Edit Anime</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Hidden input for anime ID -->
+                        <input type="hidden" id="editAnimeId">
+
+                        <div class="form-group">
+                            <label for="editAnimeTitle">Title</label>
+                            <input type="text" class="form-control" id="editAnimeTitle" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editAnimeSynopsis">Synopsis</label>
+                            <textarea class="form-control" id="editAnimeSynopsis" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editAnimeReleaseDate">Release Date</label>
+                            <input type="date" class="form-control" id="editAnimeReleaseDate">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editAnimeStatus">Status</label>
+                            <select class="form-select" id="editAnimeStatus">
+                                <option value="ongoing">Ongoing</option>
+                                <option value="completed">Completed</option>
+                            </select>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="editThumbnail">Thumbnail</label>
+                            <input type="file" class="form-control" id="editThumbnail">
+                        </div>
+                        <div class="form-group">
+                            <label for="editBanner">Banner</label>
+                            <input type="file" class="form-control" id="editBanner">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" id="saveEditAnimeButton" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div id="users" class="section">
+            <h2>Users Management</h2>
+            <p>This section allows you to manage users.</p>
+        </div>
+        <!-- Settings Section -->
+        <div id="settings" class="section">
+            <h2>Settings</h2>
+            <p>This section allows you to manage settings.</p>
+
+            <!-- Button to open the modal for viewing images -->
+            <button id="viewImagesButton" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#slideimageModal">View
+                Slideshow Images</button>
+
+            <!-- Button to open the modal for adding images -->
+            <button id="addImageButton" class="btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#addImageModal">Add Slideshow Image</button>
+
+            <!-- Modal Structure for Viewing Images -->
+            <div class="modal fade" id="slideimageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="imageModalLabel">Slideshow Images</h5>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-dark table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Link</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="imageTableBody">
+                                    <!-- Slideshow image rows will be populated here dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Structure for Adding Images -->
+            <div class="modal fade" id="addImageModal" tabindex="-1" role="dialog" aria-labelledby="addImageModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addImageModalLabel">Add Slideshow Image</h5>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addImageForm">
+                                <div class="form-group">
+                                    <label for="slideshowImage">Select Image</label>
+                                    <input type="file" class="form-control" id="slideshowImages" multiple
+                                        accept="image/*" required>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" id="saveImageButton" class="btn btn-primary">Add Image</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="footer-cta pt-3 pb-3">
+                <div class="row">
+                    <div class="d-flex align-items-center justify-content-center vh-10">
+                        <div class="single-cta text-center">
+                            <i class="fas fa-quote-left"></i>
+                            <div class="cta-text">
+                                <span id="animeQuoteHere">Quote</span>
+                                <br>
+                                <span id="animeAuthorHere">Author/Anime</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="col-xl-4 col-md-4 mb-30">
+                        <div class="single-cta">
+                            <i class="fas fa-phone"></i>
+                            <div class="cta-text">
+                                <h4>Call us</h4>
+                                <span>9876543210 0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-4 mb-30">
+                        <div class="single-cta">
+                            <i class="far fa-envelope-open"></i>
+                            <div class="cta-text">
+                                <h4>Mail us</h4>
+                                <span>mail@info.com</span>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+            <div class="footer-content pt-5 pb-5">
+                <div class="container text-center">
+                    <div class="row justify-content-center">
+                        <!-- Logo Section -->
+                        <div class="col-xl-4 col-lg-4 mt-3 mb-3">
+                            <div class="footer-widget">
+                                <div class="footer-logo">
+                                    <a href="index.html">
+                                        <img src="../static/images/Logo-NoBackgroud.png" class="img-fluid" alt="logo">
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- Useful Links Section -->
+                        <div class="col-xl-4 col-lg-4 col-md-6 mb-3">
+                            <div class="footer-widget">
+                                <div class="footer-widget-heading">
+                                    <h3>Useful Links</h3>
+                                </div>
+                                <ul class="list-unstyled">
+                                    <li><a href="#">Home</a></li>
+                                    <li><a href="#">About</a></li>
+                                    <li><a href="#">Services</a></li>
+                                    <li><a href="https://arindhimar.github.io/portfolio/">Portfolio</a></li>
+                                    <li><a href="mailto:arindhimar111@gmail.com">Contact</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Copyright Section -->
+                    <div class="row justify-content-center mt-4">
+                        <div class="col-12">
+                            <div class="copyright-text">
+                                <p>Copyright &copy; 2024, All Rights Reserved <a
+                                        href="https://github.com/arindhimar/VideoStreamingPlatform/tree/ANIMEX">ANIMEX</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Social Media Icons -->
+                    <div class="row justify-content-center mt-3">
+                        <div class="col-12">
+                            <div class="footer-social-icons">
+                                <a href="https://www.instagram.com/arin_dhimar_/" target="_blank" class="m-3"><i
+                                        class="fab fa-instagram"></i></a>
+                                <a href="https://github.com/arindhimar" target="_blank" class="m-3"><i
+                                        class="fab fa-github"></i></a>
+                                <a href="https://www.linkedin.com/in/arin-dhimar/" target="_blank" class="m-3"><i
+                                        class="fab fa-linkedin"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </footer>
+
+    <script src="../static/js/jquery-3.6.0.min.js"></script>
+    <script src="../static/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/js/popper.js"></script>
+    <script src="https://kit.fontawesome.com/df60ac4e21.js" crossorigin="anonymous"></script>
+
+
+    <script src="../static/js/admin.js"></script>
+
+
+
+</body>
+
+</html>

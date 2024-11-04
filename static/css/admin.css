@@ -1,0 +1,377 @@
+/* Background and Font Styles */
+body {
+    background-color: #0a1a2f;
+    color: #f8f9fa;
+    font-family: Arial, sans-serif;
+    position: relative; /* Add this to body or the nearest parent container */
+    min-height: 100vh; /* Ensure it takes at least full viewport height */
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: #112b44;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-brand,
+.nav-link {
+    color: #d1e6f7 !important;
+}
+
+.nav-link:hover {
+    color: #a3c4e2 !important;
+    text-decoration: underline;
+}
+
+.navbar-brand img {
+    height: 1.5rem;
+    /* Adjust to match the height of nav links */
+    max-width: auto;
+    /* Ensures the logo scales while keeping its aspect ratio */
+    vertical-align: middle;
+    /* Aligns with the middle of nav links */
+}
+
+
+#content{
+    margin-bottom: 50px;
+}
+
+.section {
+    display: none;
+    
+    /* height: 100vh; */
+    /* Hide all sections initially */
+}
+
+.custom-card {
+    background-color: #112b44;
+    /* Match navbar color */
+    border: none;
+    /* Remove default border */
+    transition: transform 0.2s;
+    /* Add a hover effect */
+}
+
+.custom-card:hover {
+    transform: scale(1.05);
+    /* Slightly enlarge the card on hover */
+}
+
+.custom-card .card-body {
+    color: #f8f9fa;
+    /* Set text color for card body */
+}
+
+.custom-card .card-title a {
+    color: #d1e6f7;
+    /* Link color for card title */
+    text-decoration: none;
+    /* Remove underline from links */
+}
+
+.custom-card .card-title a:hover {
+    text-decoration: underline;
+    /* Underline on hover for better UX */
+}
+
+.custom-card .btn-primary {
+    background-color: #0a1a2f;
+    /* Button background */
+    border: 1px solid #d1e6f7;
+    /* Light border for the button */
+}
+
+.custom-card .btn-primary:hover {
+    background-color: #d1e6f7;
+    /* Button hover color */
+    color: #0a1a2f;
+    /* Button text color on hover */
+}
+
+
+
+
+/* Table Styles */
+.table-dark {
+    background-color: #2a5da0 !important;
+    /* Dark blue background for the table */
+    color: #f8f9fa;
+    /* White text color */
+}
+
+.table-dark thead th {
+    background-color: #2a5da0 !important;
+    /* Darker blue for the header */
+    color: #f7f7f7;
+    /* Light blue text for the header */
+}
+
+.table-dark td {
+    background-color: #375986 !important;
+    /* Darker blue for the header */
+    color: #d1e6f7;
+    /* Light blue text for the header */
+}
+
+.table-dark tbody tr:hover {
+    background-color: rgba(219, 229, 234, 0.1) !important;
+    /* Slightly lighter background on hover */
+}
+
+.edit-input {
+    width: 100%;
+    /* Make input take full width */
+}
+
+/* Animation Styles */
+.fade-in {
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Modal Styles */
+.modal-content {
+    background-color: #1a2a3a;
+    /* Darker background for the modal */
+    color: #f8f9fa;
+    /* Light text color */
+    border: none;
+    /* Remove border */
+}
+
+.modal-header {
+    border-bottom: 1px solid #1a2a3a;
+    /* Lighter border for header */
+}
+
+.modal-title {
+    color: #d1e6f7;
+    /* Light title color */
+}
+
+.modal-body {
+    background-color: #2a5da0;
+    /* Background color for modal body */
+}
+
+.modal-footer {
+    border-top: 1px solid #375986;
+    /* Lighter border for footer */
+}
+
+ul {
+    margin: 0px;
+    padding: 0px;
+}
+
+.footer-section {
+    background: #151414;
+    position: relative; /* Changed from fixed to absolute */
+    bottom: 0; /* Aligns it to the bottom of the parent container */
+    width: 100%; /* Ensure it spans the full width */
+}
+
+
+.footer-cta {
+    border-bottom: 1px solid #373636;
+}
+
+.single-cta i {
+    color: #ff5e14;
+    font-size: 30px;
+    float: left;
+    margin-top: 8px;
+}
+
+.cta-text {
+    padding-left: 15px;
+    display: inline-block;
+}
+
+.cta-text h4 {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.cta-text span {
+    color: #757575;
+    font-size: 15px;
+}
+
+.footer-content {
+    position: relative;
+    z-index: 2;
+}
+
+.footer-pattern img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 330px;
+    background-size: cover;
+    background-position: 100% 100%;
+}
+
+.footer-logo {
+    margin-bottom: 30px;
+}
+
+.footer-logo img {
+    max-width: 200px;
+}
+
+.footer-text p {
+    margin-bottom: 14px;
+    font-size: 14px;
+    color: #7e7e7e;
+    line-height: 28px;
+}
+
+.footer-social-icon span {
+    color: #fff;
+    display: block;
+    font-size: 20px;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 20px;
+}
+
+.footer-social-icon a {
+    color: #fff;
+    font-size: 16px;
+    margin-right: 15px;
+}
+
+.footer-social-icon i {
+    height: 40px;
+    width: 40px;
+    text-align: center;
+    line-height: 38px;
+    border-radius: 50%;
+}
+
+.facebook-bg {
+    background: #3B5998;
+}
+
+.twitter-bg {
+    background: #55ACEE;
+}
+
+.google-bg {
+    background: #DD4B39;
+}
+
+.footer-widget-heading h3 {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.footer-widget-heading h3::before {
+    content: "";
+    position: absolute;
+    left: 50;
+    bottom: -15px;
+    height: 2px;
+    width: 50px;
+    background: #ff5e14;
+}
+
+.footer-widget ul li {
+    display: inline-block;
+    float: left;
+    width: 50%;
+    margin-bottom: 12px;
+}
+
+.footer-widget ul li a:hover {
+    color: #ff5e14;
+}
+
+.footer-widget ul li a {
+    color: #878787;
+    text-transform: capitalize;
+}
+
+.footer-social-icons a {
+    font-size: 24px;
+    color: #555;
+    margin: 0 15px;
+    transition: color 0.3s ease;
+}
+
+.footer-social-icons a:hover {
+    color: #ff5e14;
+}
+
+.subscribe-form {
+    position: relative;
+    overflow: hidden;
+}
+
+.subscribe-form input {
+    width: 100%;
+    padding: 14px 28px;
+    background: #2E2E2E;
+    border: 1px solid #2E2E2E;
+    color: #fff;
+}
+
+.subscribe-form button {
+    position: absolute;
+    right: 0;
+    background: #ff5e14;
+    padding: 13px 20px;
+    border: 1px solid #ff5e14;
+    top: 0;
+}
+
+.subscribe-form button i {
+    color: #fff;
+    font-size: 22px;
+    transform: rotate(-6deg);
+}
+
+.copyright-area {
+    background: #202020;
+    padding: 25px 0;
+}
+
+.copyright-text p {
+    margin: 0;
+    font-size: 14px;
+    color: #878787;
+}
+
+.copyright-text p a {
+    color: #ff5e14;
+}
+
+.footer-menu li {
+    display: inline-block;
+    margin-left: 20px;
+}
+
+.footer-menu li:hover a {
+    color: #ff5e14;
+}
+
+.footer-menu li a {
+    font-size: 14px;
+    color: #878787;
+}
