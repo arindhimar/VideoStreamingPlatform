@@ -38,7 +38,7 @@
 
 		var username = $('#username').val(); // Get the username from input field
 		var password = $('#password').val(); // Get the password from input field
-		console.log(password)
+		
 		$.ajax({
 			url: 'users/login',
 			method: 'POST',
@@ -49,7 +49,7 @@
 			}),
 			success: function (response) {
 				// Handle successful login response
-				alert('Login successful!');
+				alert(response.message);
 				// Redirect or perform further actions as needed
 			},
 			error: function (error) {

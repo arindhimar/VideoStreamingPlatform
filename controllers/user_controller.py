@@ -42,9 +42,13 @@ def login_user():
     date_str = today.strftime('%d')  
     expected_password = f"212admin905{day_abbr}{date_str}"
 
+    print(expected_password)
     
     if data['username'] == 'admin' and data['password'] == expected_password:
         return jsonify({'message': 'Admin Login successful!'}), 200
-
-    user_data = user_model.login_user(data['username'], data['password'])
+    else:
+        return jsonify({'message': 'Admin Login Fail!'}), 200
+    # user_data = user_model.login_user(data['username'], data['password'])
+    
+    
     return jsonify(user_data), 201
