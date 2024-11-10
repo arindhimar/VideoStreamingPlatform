@@ -139,8 +139,6 @@ $(document).ready(function () {
             $('#' + section).slideDown(300, function () {
                 if (section === 'anime') fetchAnime();
                 if (section === 'genres') fetchGenres();
-                if (section === 'episodes') fetchAnime();
-                // if (section === 'genres') fetchGenres();
 
             });
         });

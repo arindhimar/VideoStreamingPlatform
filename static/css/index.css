@@ -1,6 +1,16 @@
-#submitBtn   {
+#submitBtn {
     background-color: #d1e6f7 !important;
 }
 #submitBtn:hover {
     background-color: #fff !important;
+}
+
+/* Sign-Up Link Style */
+.sign-up-link {
+    color: #d1e6f7;
+    font-weight: 700;
+}
+.sign-up-link:hover {
+    color: #fff;
+    text-decoration: underline;
 }

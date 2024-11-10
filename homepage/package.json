@@ -10,8 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@heroicons/react": "^1.0.6",
+    "hls.js": "^1.5.17",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-hls-player": "^3.0.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",

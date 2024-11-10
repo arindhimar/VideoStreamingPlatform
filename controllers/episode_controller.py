@@ -1,64 +1,129 @@
-from flask import Blueprint, request, jsonify, send_from_directory
+from flask import Blueprint, request, jsonify, send_from_directory, Response
 import os
 import uuid
 import subprocess
 from models.episode import EpisodeModel
 from concurrent.futures import ThreadPoolExecutor
 import shutil
+import urllib.parse
 
+# Blueprint setup for episode-related routes
 episode_blueprint = Blueprint('episode', __name__)
-episode_model = EpisodeModel()
-executor = ThreadPoolExecutor(max_workers=5)
+episode_model = EpisodeModel()  # Instance to interact with the Episode model
+executor = ThreadPoolExecutor(max_workers=5)  # To handle video processing tasks concurrently
 
+# Directory where uploaded video files will be stored
 UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 def is_video_file(filename):
+    """
+    Checks if the uploaded file is a valid video file based on its extension.
+    Returns True if it's a valid video, False otherwise.
+    """
     return filename.lower().endswith(('.mp4', '.avi', '.mov', '.mkv'))
 
 def process_video_task(video_path, output_path, anime_id, title, episode_number):
-    hls_path = os.path.join(output_path, "index.m3u8")
+    """
+    Processes the uploaded video file to generate HLS (HTTP Live Streaming) compatible segments.
+    
+    Args:
+    video_path (str): Path to the uploaded video file.
+    output_path (str): Directory where the output HLS segments will be stored.
+    anime_id (int): ID of the anime the episode belongs to.
+    title (str): Title of the episode.
+    episode_number (int): Episode number for the anime.
+
+    This function runs the ffmpeg command to encode the video, generate HLS playlists, 
+    and store the segments. It updates the episode's status in the database upon completion.
+    """
+    # Define the HLS output path with unique audio variant
+    hls_path = os.path.join(output_path, "index_%v.m3u8")
+
+    # ffmpeg command to process video, map video/audio streams, encode, and generate HLS segments
     ffmpeg_command = [
-        "ffmpeg", "-i", video_path, "-codec:v", "libx264", "-codec:a", "aac",
-        "-hls_time", "10", "-hls_playlist_type", "vod",
-        "-hls_segment_filename", os.path.join(output_path, "segment%03d.ts"),
-        "-start_number", "0", hls_path
+        "ffmpeg", "-i", video_path,
+        
+        # Map both video and audio streams for each language/variant
+        "-map", "0:v:0", "-map", "0:a:0", "-map", "0:v:0", "-map", "0:a:1",
+        
+        # Video encoding settings (lower bitrate for faster streaming)
+        "-codec:v", "libx264", "-preset", "ultrafast", "-b:v", "500k", "-s", "640x360",
+        
+        # Audio encoding settings
+        "-codec:a", "aac", "-b:a", "128k",
+        "-hls_time", "4",  # Segment duration
+        "-hls_playlist_type", "vod",  # Video-on-Demand
+        "-hls_segment_filename", os.path.join(output_path, "segment%03d_%v.ts"),
+        
+        # Flags to prevent reusing video for different audio streams
+        "-hls_flags", "independent_segments",
+        
+        # Master playlist and variant streams (video and audio combinations)
+        "-master_pl_name", "index.m3u8",
+        "-var_stream_map", "v:0,a:0 v:1,a:1",
+        
+        # Start segment numbering at 0
+        "-start_number", "0",
+        
+        hls_path
     ]
 
     try:
+        # Run ffmpeg command to process the video
         subprocess.run(ffmpeg_command, check=True)
         ts_url_prefix = f"/stream/{anime_id}/{episode_number}/segment"
         
-        # Call update_episode_status with both anime_id and episode_number
-        episode_model.update_episode_status(anime_id, episode_number, 'ready', hls_path, ts_url_prefix)
+        # Update the episode status to 'ready' in the database
+        episode_model.update_episode_status(anime_id, episode_number, 'ready', os.path.join(output_path, "index.m3u8"), ts_url_prefix)
         return True
     except subprocess.CalledProcessError as e:
+        # In case of error, print the error and clean up
         print(f"Error in FFmpeg process: {e}")
         cleanup_after_failure(video_path, output_path, episode_number)
         return False
 
-
 def cleanup_after_failure(video_path, output_path, episode_number):
-    # Remove uploaded video file
+    """
+    Cleans up the uploaded video file, output files, and database entry if the video processing fails.
+
+    Args:
+    video_path (str): Path to the uploaded video file.
+    output_path (str): Path to the output directory containing HLS segments.
+    episode_number (int): Episode number for the anime.
+
+    This function ensures that no unnecessary files remain in case of failure.
+    """
     if os.path.exists(video_path):
-        os.remove(video_path)
-
-    # Remove output directory
+        os.remove(video_path)  # Remove the uploaded video
     if os.path.exists(output_path):
-        shutil.rmtree(output_path)
+        shutil.rmtree(output_path)  # Remove the output directory
+    episode_model.delete_episode(episode_number)  # Delete the episode from the database
 
-    # Remove database entry
-    episode_model.delete_episode(episode_number)
-    
-    
+# Route to fetch all episodes for a specific anime
 @episode_blueprint.route('anime/<int:anime_id>', methods=['GET'])
 def get_episodes_by_anime(anime_id):
-    """Retrieve all episodes for a specific anime by its ID."""
+    """
+    Retrieves all episodes of an anime by its ID from the database.
+    
+    Args:
+    anime_id (int): The ID of the anime.
+
+    Returns:
+    A JSON response containing a list of episodes for the given anime.
+    """
     episodes = episode_model.fetch_episodes_by_anime_id(anime_id)
     return jsonify(episodes)
 
+# Route to handle video file upload
 @episode_blueprint.route('/upload', methods=['POST'])
 def upload_video():
+    """
+    Handles the upload of a video file, processes it, and stores it in the database.
+    
+    Validates the file, creates a new episode entry in the database, and then
+    processes the video in the background.
+    """
     if 'file' not in request.files:
         return jsonify({"error": "No file provided"}), 400
 
@@ -66,78 +131,118 @@ def upload_video():
     if not is_video_file(file.filename):
         return jsonify({"error": "Invalid file type"}), 400
 
+    # Get additional episode details from the form
     anime_id = request.form.get('anime_id')
     title = request.form.get('title')
     episode_number = request.form.get('episode_number')
 
-    episode_id = str(uuid.uuid4())
+    episode_id = str(uuid.uuid4())  # Generate a unique ID for the episode
     output_path = os.path.join(UPLOAD_FOLDER, episode_id)
     video_path = os.path.join(output_path, file.filename)
     os.makedirs(output_path, exist_ok=True)
-    file.save(video_path)
+    file.save(video_path)  # Save the uploaded video file
 
     try:
-        # Create an entry with status 'processing' (single entry)
+        # Create an entry in the database with status 'processing'
         episode_model.create_episode(anime_id, title, episode_number, "", "processing")
 
-        # Process video in background and update status once ready
+        # Submit the video processing task for background execution
         executor.submit(process_video_task, video_path, output_path, anime_id, title, episode_number)
 
         return jsonify({"message": "Video upload successful, processing in background"})
-
+    
     except Exception as e:
         print(f"Error occurred: {e}")
         return jsonify({"error": "Failed to upload video, please try again."}), 500
-    if 'file' not in request.files:
-        return jsonify({"error": "No file provided"}), 400
 
-    file = request.files['file']
-    if not is_video_file(file.filename):
-        return jsonify({"error": "Invalid file type"}), 400
+# Route to stream the video with specific language/variant
+@episode_blueprint.route('/stream/<int:anime_id>/<int:episode_number>/<int:variant>', methods=['GET'])
+def stream_video(anime_id, episode_number, variant):
+    """
+    Streams a specific variant of the video (audio/language track) based on the requested variant.
+    
+    Args:
+    anime_id (int): The ID of the anime.
+    episode_number (int): The episode number.
+    variant (int): The variant number (audio track or resolution).
 
-    # Fetch anime_id, title, and episode_number from the request
-    anime_id = request.form.get('anime_id')  
-    title = request.form.get('title')  
-    episode_number = request.form.get('episode_number')  
+    Returns:
+    A Response containing the requested m3u8 file.
+    """
+    variant_filename = f'index_{variant}.m3u8'
+    
+    # Fetch episode details from the database
+    episode = episode_model.get_episode(anime_id, episode_number)
+    if not episode or episode['status'] != 'ready':
+        return jsonify({"error": "Episode not found or not ready"}), 404
 
-    episode_id = str(uuid.uuid4())
-    output_path = os.path.join(UPLOAD_FOLDER, episode_id)
-    video_path = os.path.join(output_path, file.filename)
-    os.makedirs(output_path, exist_ok=True)
-    file.save(video_path)
-
-    # Start a transaction for database operations
+    # Get the path to the m3u8 file for the chosen variant
+    m3u8_file_path = episode['m3u8_url']
+    m3u8_dir = os.path.dirname(m3u8_file_path)
+    
+    # Serve the specific variant playlist
     try:
-        # Create an entry in the database with initial status as 'processing'
-        episode_model.create_episode(anime_id, title, episode_number, "", "")  # Initial status
+        with open(os.path.join(m3u8_dir, variant_filename), 'r') as file:
+            m3u8_content = file.read()
 
-        # Submit the video processing task
-        executor.submit(process_video_task, video_path, output_path, anime_id, title, episode_number)
+        # Modify the m3u8 content to ensure correct segment paths
+        return Response(m3u8_content, content_type='application/vnd.apple.mpegurl')
 
-        video_url = f"/stream/{episode_id}/index.m3u8"
-        return jsonify({"message": "Video upload successful, processing in background", "videoUrl": video_url})
+    except FileNotFoundError:
+        return jsonify({"error": "Variant playlist not found"}), 404
 
-    except Exception as e:
-        # Handle rollback if there was an error before video processing
-        print(f"Error occurred: {e}")
-        return jsonify({"error": "Failed to upload video, please try again."}), 500
-
-@episode_blueprint.route('/stream/<int:anime_id>/<int:episode_number>/index.m3u8')
-def stream_video(anime_id, episode_number):
-    # Fetch the episode details from the database
-    episode = episode_model.get_episode(anime_id, episode_number)
-    if not episode:
-        return jsonify({"error": "Episode not found"}), 404
-
-    output_path = os.path.join(UPLOAD_FOLDER, str(episode['episode_id']))  # Adjust based on how you store episode_id
-    return send_from_directory(output_path, 'index.m3u8')
-
-@episode_blueprint.route('/stream/<int:anime_id>/<int:episode_number>/segment<path:filename>')
+# Route to stream video segments
+@episode_blueprint.route('/stream/<int:anime_id>/<int:episode_number>/segment<path:filename>', methods=['GET'])
 def stream_segment(anime_id, episode_number, filename):
-    # Fetch the episode details from the database
-    episode = episode_model.get_episode(anime_id, episode_number)
-    if not episode:
-        return jsonify({"error": "Episode not found"}), 404
+    """
+    Streams a specific video segment file.
+    
+    Args:
+    anime_id (int): The ID of the anime.
+    episode_number (int): The episode number.
+    filename (str): The segment filename.
 
-    output_path = os.path.join(UPLOAD_FOLDER, str(episode['episode_id']))  # Adjust based on how you store episode_id
-    return send_from_directory(output_path, filename)
+    Returns:
+    The video segment file if found, else an error message.
+    """
+    # Decode the filename to handle spaces and other encoded characters
+    filename = urllib.parse.unquote(filename)
+    print(f"Decoded filename: {filename}")  # Debug print to see the raw decoded filename
+    
+    # Prepend 'segment' to the filename to ensure it matches the naming format used for segments
+    filename = 'segment' + filename  # Ensure correct segment filename formatting
+    print(f"Final filename after prepending 'segment': {filename}")  # Debug print
+
+    # Fetch the episode details from the database to verify if it's available and ready
+    print("Fetching episode data...")
+    episode = episode_model.get_episode(anime_id, episode_number)
+    
+    # Check if the episode exists and its status is 'ready' before proceeding
+    if not episode or episode['status'] != 'ready':
+        return jsonify({"error": "Episode not found or not ready"}), 404
+    print(f"Episode found: {episode}")
+
+    # Decode the URL path for the segment directory, which stores the segment files
+    segment_dir = urllib.parse.unquote(os.path.dirname(episode['m3u8_url']))
+    print(f"Decoded segment directory path: {segment_dir}")  # Debug print for segment directory path
+
+    # Ensure no URL encoding issues by replacing spaces with '%20' (standard URL encoding)
+    segment_dir = segment_dir.replace(' ', ' ')  # Ensure no encoding issues here
+    filename = filename.replace(' ', ' ')  # Ensure no encoding issues for filename
+    print(f"Resolved segment directory: {segment_dir}")  # Debug print for final segment directory path
+    print(f"Resolved filename: {filename}")  # Debug print for final segment filename
+
+    # Construct the full path to the video segment using the segment directory and filename
+    file_path = os.path.join(segment_dir, filename)
+    print(f"Checking if file exists at: {file_path}")  # Debug print for the complete path check
+    
+    # If the segment file does not exist, log an error and return a 404
+    if not os.path.exists(file_path):
+        print(f"File does not exist at path: {file_path}")  # Debug print if file is not found
+        return jsonify({"error": "File not found"}), 404
+
+    # If the file exists, log the serving path and send the file to the client
+    print(f"Serving segment from: {file_path}")  # Debug print for the file being served
+    
+    # Send the file from the segment directory with an option to download as an attachment
+    return send_from_directory(segment_dir, filename, as_attachment=True), 200

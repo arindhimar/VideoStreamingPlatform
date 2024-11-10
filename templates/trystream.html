@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Streaming</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+
+<body>
+
+    <video id="video" controls width="640" height="360"></video>
+    <button id="playButton">Play Video</button>
+    <div id="error-message"
+        style="display:none; color: red; padding: 10px; background-color: #f8d7da; border-radius: 5px;"></div>
+
+    <!-- Controls for language and captions -->
+    <div>
+        <label for="audioTrack">Select Audio:</label>
+        <select id="audioTrack">
+            <option value="0">Japanese</option>
+            <option value="1">English</option>
+        </select>
+
+        <label for="captions">Subtitles:</label>
+        <select id="captions">
+            <option value="0">None</option>
+            <option value="1">Japanese Subtitles</option>
+        </select>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            const video = document.getElementById('video');
+            const playButton = document.getElementById('playButton');
+            const errorMessage = $('#error-message');
+            const audioTrackSelect = $('#audioTrack');
+            const captionsSelect = $('#captions');
+
+            let hls = null;
+            let animeId = 7;  // Example anime ID
+            let episodeNumber = 2;  // Example episode number
+
+            if (Hls.isSupported()) {
+                // Initialize HLS instance
+                hls = new Hls();
+
+                // Function to load video with the selected language
+                function loadVideo() {
+                    const audioTrack = audioTrackSelect.val();  // Get selected audio track
+                    const m3u8Url = `episodes/stream/${animeId}/${episodeNumber}/${audioTrack}`;  // Construct URL based on selected audio
+                    hls.loadSource(m3u8Url);  // Load the m3u8 playlist based on selected variant
+                    hls.attachMedia(video);
+                    video.load();  // Reset and load the new video
+
+                    // Clear previous error message
+                    errorMessage.hide();
+                }
+
+                // Play button logic
+                playButton.addEventListener('click', function () {
+                    loadVideo();
+                    video.play();  // Play video after loading
+                });
+
+                // Handle audio track change
+                audioTrackSelect.on('change', function () {
+                    // Stop the video, change audio track, and reload the video
+                    video.pause();
+                    loadVideo();
+                    video.play();  // Start playing with the new audio track
+                });
+
+                // Handle caption/subtitle change
+                captionsSelect.on('change', function () {
+                    const subtitleTrack = captionsSelect.val(); // Get selected subtitle track
+                    const subtitleTrackIndex = subtitleTrack > 0 ? subtitleTrack - 1 : -1; // Adjust index for HLS.js
+
+                    hls.subtitleTrack = subtitleTrackIndex;  // Set the subtitle track in HLS.js
+                    console.log(`Subtitle track set to index: ${subtitleTrackIndex}`);
+
+                    // Reload the video with the updated subtitle track
+                    loadVideo();
+                    video.play();  // Start playing with the new subtitle track
+                });
+
+                // Handle HLS.js error
+                hls.on(Hls.Events.ERROR, function (event, data) {
+                    if (data.fatal) {
+                        let errorText = '';
+                        switch (data.type) {
+                            case Hls.ErrorTypes.NETWORK_ERROR:
+                                errorText = 'Network error occurred while loading the video. Please check your connection.';
+                                break;
+                            case Hls.ErrorTypes.MEDIA_ERROR:
+                                errorText = 'Media error while playing the video. Try refreshing the page.';
+                                break;
+                            default:
+                                errorText = 'An unknown error occurred.';
+                                break;
+                        }
+                        errorMessage.text(errorText).show();
+                    }
+                });
+
+                // Initial video load (start with the default audio track)
+                loadVideo();
+
+            } else {
+                errorMessage.text('Your browser does not support HLS.js.').show();
+            }
+        });
+    </script>
+
+</body>
+
+</html>

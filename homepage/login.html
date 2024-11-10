@@ -6,9 +6,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel="stylesheet" href="../static/css/main.css">
-	<link rel="stylesheet" href="../static/css/index.css">
-	<link rel="icon" type="image/png" href="../static/images/Logo-NoBackgroud.png" />
+	<link rel="stylesheet" href="./src/main.css">
+	<link rel="stylesheet" href="./src/index.css">
+	<link rel="icon" type="image/png" href="./src/assets/Logo-NoBackgroud.png" />
 	<title>ANIMEX</title>
 </head>
 
@@ -17,12 +17,9 @@
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-md-6 text-center">
-					<!-- <img src="../static/images/Logo-NoBackgroud.png" class="responsive-logo" alt="ANIMEX">
-					 -->
 					<h2 class="heading-section">
 						ANIMEX
 					</h2>
-
 				</div>
 			</div>
 			<div class="row justify-content-center">
@@ -34,14 +31,11 @@
 								<input type="text" class="form-control" id="username" placeholder="Username" required>
 							</div>
 							<div class="form-group">
-								<input type="password" id="password" class="form-control"
-									placeholder="Password" required>
-								<span toggle="#password-field"
-									class="fa fa-fw fa-eye field-icon toggle-password"></span>
+								<input type="password" id="password" class="form-control" placeholder="Password" required>
+								<span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
 							</div>
 							<div class="form-group">
-								<button type="submit" id="submitBtn"
-									class="form-control btn btn-primary submit px-3">Sign In</button>
+								<button type="submit" id="submitBtn" class="form-control btn btn-primary submit px-3">Sign In</button>
 							</div>
 							<div class="form-group d-md-flex">
 								<div class="w-50">
@@ -51,16 +45,19 @@
 									</label>
 								</div>
 								<div class="w-50 text-md-right">
-									<a href="/admin" style="color: #fff">Forgot Password</a>
+									<a href="#" style="color: #fff">Forgot Password</a>
 								</div>
 							</div>
 						</form>
 						<p class="w-100 text-center">&mdash; Or Sign In With &mdash;</p>
 						<div class="social d-flex text-center">
-							<a href="#" class="px-2 py-2 mr-md-1 rounded"><span class="ion-logo-facebook mr-2"></span>
-								Facebook</a>
-							<a href="#" class="px-2 py-2 ml-md-1 rounded"><span class="ion-logo-twitter mr-2"></span>
-								Twitter</a>
+							<a href="#" class="px-2 py-2 mr-md-1 rounded"><span class="ion-logo-facebook mr-2"></span> Facebook</a>
+							<a href="#" class="px-2 py-2 ml-md-1 rounded"><span class="ion-logo-twitter mr-2"></span> Twitter</a>
+						</div>
+
+						<!-- Sign Up Option -->
+						<div class="text-center mt-4">
+							<p>Don't have an account? <a href="#" class="sign-up-link">Sign Up</a></p>
 						</div>
 					</div>
 				</div>
@@ -68,11 +65,10 @@
 		</div>
 	</section>
 
-	<script src="../static/js/jquery-3.6.0.min.js"></script>
-	<script src="../static/js/popper.js"></script>
-	<script src="../static/js/bootstrap.min.js"></script>
-	<script src="../static/js/index.js"></script>
-
+	<script src="./src/js/jquery-3.6.0.min.js"></script>
+	<script src="./src/js/popper.js"></script>
+	<script src="./src/js/bootstrap.min.js"></script>
+	<script src="./src/js/index.js"></script>
 </body>
 
 </html>

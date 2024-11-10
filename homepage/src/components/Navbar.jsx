@@ -61,10 +61,13 @@ const Navbar = () => {
                 </span>
               </span>
 
-              <span className="hover:text-white cursor-pointer relative flex items-center space-x-2">
-                <i className="fas fa-user p-2 text-gray-400 bg-gray-800 rounded-full hover:bg-white-700 hover:text-white"></i>
-                <span className="text-sm text-gray-300 hover:text-white">Login</span>
-              </span>
+
+              <a href="./login.html" >
+                <span className="hover:text-white cursor-pointer relative flex items-center space-x-2">
+                  <i className="fas fa-user p-2 text-gray-400 bg-gray-800 rounded-full hover:bg-white-700 hover:text-white"></i>
+                  <span className="text-sm text-gray-300 hover:text-white">Login</span>
+                </span>
+              </a>
             </div>
           </div>
         </div>

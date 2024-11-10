@@ -66,6 +66,7 @@ class EpisodeModel:
         cur.execute(query, params)
         self.conn.commit()
         cur.close()
+
     def delete_episode(self, episode_number):
         cur = self.conn.cursor()
         cur.execute("DELETE FROM episodes WHERE episode_number = %s", (episode_number,))
@@ -73,10 +74,12 @@ class EpisodeModel:
         cur.close()
 
     def get_episode(self, anime_id, episode_number):
-        cur = self.conn.cursor()
-        cur.execute("SELECT * FROM episodes WHERE anime_id = %s AND episode_number = %s", (anime_id, episode_number))
+        cur = self.conn.cursor(dictionary=True)  # Use dictionary cursor here
+        cur.execute('SELECT * FROM episodes WHERE anime_id = %s AND episode_number = %s', (anime_id, episode_number))
         episode = cur.fetchone()
         cur.close()
+        
+        # Return the episode as a dictionary (if found)
         return episode
 
     def fetch_episodes_by_anime_id(self, anime_id):
@@ -86,4 +89,3 @@ class EpisodeModel:
         results = cur.fetchall()
         cur.close()
         return results
-
