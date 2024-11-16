@@ -283,6 +283,13 @@ $(document).ready(function () {
             success: function () {
                 $('#addAnimeModal').modal('hide'); // Close the modal
                 notifications.show('Anime added successfully!', 'success');
+                $('#animeTitle').val("")
+                $('#animeSynopsis').val("")
+                $('#animeReleaseDate').val("")
+                $('#animeStatus').val("")
+                $('#animeThumbnail').val("")
+                $('#animeBanner').val("")
+
                 fetchAnime(); // Refresh the anime list
             },
             error: function (error) {

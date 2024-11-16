@@ -1,7 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false); // To toggle mobile menu visibility
+  const [currentTime, setCurrentTime] = useState(""); // State to hold the current time
+
+  // Function to update the clock
+  const updateClock = () => {
+    const now = new Date();
+    const formattedTime = now.toLocaleTimeString(); // Format the time as HH:MM:SS
+    setCurrentTime(formattedTime);
+  };
+
+  useEffect(() => {
+    // Update the clock every second
+    const intervalId = setInterval(updateClock, 1000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
 
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -29,13 +45,11 @@ const Navbar = () => {
 
           {/* Main Navbar Content */}
           <div className="hidden md:flex items-center justify-between w-full">
-            {/* Categories aligned to the left */}
             <span className="px-2 py-1 cursor-pointer hover:bg-gray-800 hover:text-gray-200 text-gray-300 text-sm rounded flex items-center ml-4">
               <i className="fas fa-stream p-2 text-gray-400 bg-gray-800 rounded-full"></i>
               <span className="mx-1">Categories</span>
             </span>
 
-            {/* Centered Search Input */}
             <span className="px-1 hover:text-white cursor-pointer flex items-center bg-gray-800 w-1/3 rounded-md mx-auto focus-within:text-white">
               <i className="fas fa-search p-2 text-gray-400"></i>
               <input
@@ -45,12 +59,11 @@ const Navbar = () => {
               />
             </span>
 
-            {/* Right-aligned icons */}
             <div className="flex ml-auto space-x-4 items-center">
-              <span className="px-1 hover:text-white cursor-pointer relative">
-                <i className="fas fa-clock p-2 text-gray-400 bg-gray-800 rounded-full hover:bg-white-700 hover:text-white"></i>
+              <span className="px-1 hover:text-white cursor-pointer relative flex items-center space-x-2">
+                <i className="fas fa-clock p-2 text-gray-400 bg-gray-800 rounded-full"></i>
                 <span className="text-gray-300 ml-2 hover:text-white font-jura">
-                  12:00:00
+                  {currentTime}
                 </span>
               </span>
 
@@ -61,8 +74,7 @@ const Navbar = () => {
                 </span>
               </span>
 
-
-              <a href="./login.html" >
+              <a href="./login.html">
                 <span className="hover:text-white cursor-pointer relative flex items-center space-x-2">
                   <i className="fas fa-user p-2 text-gray-400 bg-gray-800 rounded-full hover:bg-white-700 hover:text-white"></i>
                   <span className="text-sm text-gray-300 hover:text-white">Login</span>
@@ -73,7 +85,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu (visible on small screens) */}
+      {/* Mobile Menu */}
       <div
         className={`${isMenuOpen ? "block" : "hidden"
           } md:hidden bg-gray-800 text-gray-200 px-4 py-2 space-y-4 transition-all duration-500 ease-out transform ${isMenuOpen
@@ -93,7 +105,7 @@ const Navbar = () => {
 
         <span className="px-2 py-1 cursor-pointer hover:bg-gray-800 hover:text-gray-200 text-gray-300 text-sm rounded flex items-center">
           <i className="fas fa-clock p-2 text-gray-400 bg-gray-800 rounded-full"></i>
-          <span className="mx-1">12:00:00</span>
+          <span className="mx-1">{currentTime}</span>
         </span>
 
         <span className="px-2 py-1 cursor-pointer hover:bg-gray-800 hover:text-gray-200 text-gray-300 text-sm rounded flex items-center">

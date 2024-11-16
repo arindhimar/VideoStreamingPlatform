@@ -11,10 +11,12 @@
   },
   "dependencies": {
     "@heroicons/react": "^1.0.6",
+    "axios": "^1.7.7",
     "hls.js": "^1.5.17",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-hls-player": "^3.0.7"
+    "react-hls-player": "^3.0.7",
+    "react-router-dom": "^6.28.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",

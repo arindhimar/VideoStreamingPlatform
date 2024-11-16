@@ -1,4 +1,5 @@
 from flask import Flask, render_template, send_from_directory
+from flask_cors import CORS  # Import CORS
 import requests
 from controllers.user_controller import user_blueprint
 from controllers.genre_controller import genre_blueprint
@@ -12,6 +13,7 @@ import os
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 # Register Blueprints
 app.register_blueprint(anime_blueprint, url_prefix='/anime')
@@ -20,8 +22,6 @@ app.register_blueprint(genre_blueprint, url_prefix='/genres')
 app.register_blueprint(episode_blueprint, url_prefix='/episodes')
 app.register_blueprint(slideshow_blueprint, url_prefix='/slideshow')
 app.register_blueprint(env_bp, url_prefix='/env')
-
-
 
 @app.route('/')
 def home():
