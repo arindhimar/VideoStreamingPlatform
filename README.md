@@ -1,6 +1,6 @@
 # ANIMEX - Anime Streaming Platform
 
-![ANIMEX Logo](https://github.com/arindhimar/VideoStreamingPlatform/blob/ANIMEX/static/images/Logo-NoBackgroud.png)
+![ANIMEX Logo](https://i.ibb.co/k0r9TFC/Logo-No-Backgroud.png)
 
 ANIMEX is an anime streaming platform designed to manage and stream anime content effectively. This web application allows users to upload, manage, and stream anime episodes seamlessly, making it easy for both administrators and viewers to enjoy their favorite shows.
 
